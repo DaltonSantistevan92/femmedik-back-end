@@ -13,10 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('clientes', function (Blueprint $table) {
+        Schema::create('citas', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->unique();
-            $table->char('estado', 1)->default('A');
+            $table->string('codigo',10);
+            $table->date('fecha');
+            $table->char('pagado',1)->default('N');
+            $table->integer('progreso')->unsigned()->default(0);
+            $table->char('estado',1)->default('A');
+            $table->timestamps();
         });
     }
 
@@ -27,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('clientes');
+        Schema::dropIfExists('citas');
     }
 };

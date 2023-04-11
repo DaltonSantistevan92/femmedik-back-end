@@ -13,10 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('clientes', function (Blueprint $table) {
+        Schema::create('doctor_horarios', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->unique();
+            $table->string('h_entrada', 8);
+            $table->string('h_salida', 8);
+            $table->char('libre', 1)->default('S');
             $table->char('estado', 1)->default('A');
+            $table->timestamps();
         });
     }
 
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('clientes');
+        Schema::dropIfExists('doctor_horarios');
     }
 };

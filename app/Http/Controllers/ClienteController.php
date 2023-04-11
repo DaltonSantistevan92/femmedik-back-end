@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Cliente;
-use Illuminate\Http\Request;
  
+use Illuminate\Http\Request;
+use App\Models\{Cliente};
+
 class ClienteController extends Controller
 {
     public function buscarClientes($cedula){

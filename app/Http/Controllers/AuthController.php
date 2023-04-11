@@ -4,16 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Validator,Hash};
-use App\Models\{User};
+use App\Models\{Doctor, User};
 
 
 class AuthController extends Controller
 {
+
+    private $personaCtrl;
+
+    public function __construct()
+    {
+        $this->personaCtrl = new PersonaController();
+    }
+
     public function login(Request $request)
     {
         try {
             $requestUser = collect( $request->usuario )->all(); 
-            $validateUser = $this->validateUser( $requestUser );
+            $validateUser = $this->validateUserLogin( $requestUser );
             $response = [];
             
             if ( $validateUser['status'] ) {
@@ -61,7 +69,7 @@ class AuthController extends Controller
         }
     }
 
-    public function validateUser( $request )
+    public function validateUserLogin( $request )
     {
         $rules = [
             'email' => 'required|email',
@@ -100,4 +108,72 @@ class AuthController extends Controller
         return response()->json($response);
 
     }
+
+    public function guardarUsuario(Request $request)
+    {
+        try {
+            $requestPersona = collect( $request->persona )->all();
+            $requestUsuario = collect( $request->usuario )->all();
+            
+            $validatePersona = $this->personaCtrl->validatePersona( $requestPersona );
+            $validateUsuario = $this->validateUser( $requestUsuario );
+            
+            if ($validatePersona['status'] && $validateUsuario['status'] ) {
+                $responsePersona = $this->personaCtrl->guardarPersona( $requestPersona );
+                $persona_id = $responsePersona['persona']->id;
+
+                $encriptarPassword = Hash::make($requestUsuario['password']);
+
+                $user = User::create([
+                    'rol_id' => $requestUsuario['rol_id'],
+                    'persona_id' => $persona_id,
+                    'name' => $requestUsuario['name'],
+                    'imagen' => $requestUsuario['imagen'],
+                    'email' => $requestUsuario['email'], 
+                    'password' => $encriptarPassword
+                ]);
+
+                if(intval($requestUsuario['rol_id']) === 2){
+                    $newDoctor = new Doctor();
+                    $newDoctor->persona_id = $persona_id;
+                    $newDoctor->estado = 'A';
+                    $newDoctor->save();
+                }
+
+                $response = [ 'status' => true, 'mensaje' => "El usuario se registro con exito", 'usuario' => $user ];
+            }else {
+                $response = [ 
+                    'status' => false, 
+                    'mensaje' => 'No se pudo crear el usuario',
+                    'falla' => [
+                        'error_persona' => $validatePersona['error'] ?? 'No presenta errores',
+                        'error_usuario' => $validateUsuario['error'] ?? 'No presenta errores'
+                    ]
+                ]; 
+            }
+            return response()->json( $response, 200 );
+        } catch (\Throwable $th) {
+            $response = [ 'status' => false, 'message' => 'Error del Servidor' ];
+            return response()->json( $response, 500 );
+        }
+    }
+
+    public function validateUser( $request )
+    {
+        $rules = [
+            'name'=> 'required',
+            'email' => 'required|email',
+            'password' => 'required'
+        ];
+
+        $messages = [
+            'name.required' => 'El campo usuario es requerido',
+            'email.required' => 'El campo correo es requerido',
+            'email.email' => 'El correo no tiene un formato válido',
+            'password.required' => 'El campo contraseña es requerido',
+        ];
+        return $this->validation( $request, $rules, $messages );
+    }
+
+
 }

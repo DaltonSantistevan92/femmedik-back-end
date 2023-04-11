@@ -15,17 +15,9 @@ class MenuController extends Controller
             $response = [];
 
             if( $menu->count() > 0 ){
-                $response=[
-                    'status' => true,
-                    'mensaje' => 'Existen Datos',
-                    'datos' => $menu
-                ];
+                $response = [ 'status' => true, 'mensaje' => 'Existen Datos', 'menu' => $menu ];
             }else{
-                $response=[
-                    'status' => false,
-                    'mensaje' => 'No existen Datos',
-                    'datos' => null
-                ];
+                $response = [ 'status' => false, 'mensaje' => 'No existen Datos', 'menu' => null ];
             }
             return response()->json( $response, 200 );
         } catch (\Throwable $th) {

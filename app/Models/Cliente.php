@@ -5,8 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\{Persona};
-
+use App\Models\{Persona,Cita};
 
 class Cliente extends Model
 {
@@ -17,5 +16,9 @@ class Cliente extends Model
 
     public function persona(){
         return $this->belongsTo(Persona::class);
+    }
+
+    public function cita(){
+        return $this->hasMany(Cita::class);
     }
 }
