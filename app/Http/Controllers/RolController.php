@@ -35,4 +35,16 @@ class RolController extends Controller
         }
         
     }
+
+    public function listarRol(){
+        $listarRol = Rol::where('estado','A')->get();
+        $response = [];
+
+        if( $listarRol ){
+            $response = [ 'status'=> true, 'mensaje' => 'Lista de roles', 'rol' => $listarRol ];
+        }else{
+            $response = [ 'status'=> false, 'mensaje' => 'No existen roles', 'rol' => null ];
+        }
+        return response()->json($response);
+    }
 }

@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-use App\Models\{Rol,Persona};
+use App\Models\{Rol,Persona,DoctorHorario,Cita};
 
 class User extends Authenticatable
 {
@@ -26,6 +26,14 @@ class User extends Authenticatable
 
     public function persona(){
         return $this->belongsTo(Persona::class);
+    }
+
+    public function doctorHorario(){
+        return $this->hasMany(DoctorHorario::class);
+    }
+
+    public function cita(){
+        return $this->hasMany(Cita::class);
     }
 
     
