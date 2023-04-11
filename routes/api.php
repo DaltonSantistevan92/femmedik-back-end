@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{AuthController,MenuController, RolController, ToolController, UserController};
+use App\Http\Controllers\{AuthController, ClienteController, MenuController, RolController, ToolController, UserController};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Route;
 //RUTAS PUBLICAS
 Route::post('login', [ AuthController::class, 'login'] );
 
+Route::get('buscarCedula/{cedula}', [ ClienteController::class, 'buscarClientes']);
 
 
 //RUTAS PROTEGIDAS POR TOKEN
